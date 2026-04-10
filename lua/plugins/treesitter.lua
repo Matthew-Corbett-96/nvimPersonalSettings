@@ -4,16 +4,14 @@ return { -- Syntax Highlighting
   opts = {
     ensure_installed = {
       "angular",
-      "html",
       "css",
+      "html",
       "javascript",
-      "typescript",
-      "html",
-      "css",
-      "scss",
-      "python",
-      "sql",
       "lua",
+      "python",
+      "scss",
+      "sql",
+      "typescript",
       "vim",
       "vimdoc"
     },
