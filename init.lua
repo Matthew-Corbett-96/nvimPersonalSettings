@@ -49,30 +49,35 @@ then
   vim.fn.mkdir(undodir, "p")
 end
 
-vim.opt.backup = false                                                                                                                                               -- do not create a backup file
-vim.opt.writebackup = false                                                                                                                                          -- do not write to a backup file
-vim.opt.swapfile = false                                                                                                                                             -- do not create a swapfile
-vim.opt.undofile = true                                                                                                                                              -- do create an undo file
-vim.opt.undodir = undodir                                                                                                                                            -- set the undo directory
-vim.opt.updatetime = 300                                                                                                                                             -- faster completion
-vim.opt.timeoutlen = 500                                                                                                                                             -- timeout duration
-vim.opt.ttimeoutlen = 0                                                                                                                                              -- key code timeout
-vim.opt.autoread = true                                                                                                                                              -- auto-reload changes if outside of neovim
-vim.opt.autowrite = false                                                                                                                                            -- do not auto-save
+vim.opt.backup = false                 -- do not create a backup file
+vim.opt.writebackup = false            -- do not write to a backup file
+vim.opt.swapfile = false               -- do not create a swapfile
+vim.opt.undofile = true                -- do create an undo file
+vim.opt.undodir =
+undodir                                -- set the undo directory
+vim.opt.updatetime = 300               -- faster completion
+vim.opt.timeoutlen = 500               -- timeout duration
+vim.opt.ttimeoutlen = 0                -- key code timeout
+vim.opt.autoread = true                -- auto-reload changes if outside of neovim
+vim.opt.autowrite = false              -- do not auto-save
 
-vim.opt.hidden = true                                                                                                                                                -- allow hidden buffers
-vim.opt.errorbells = false                                                                                                                                           -- no error sounds
-vim.opt.backspace = "indent,eol,start"                                                                                                                               -- better backspace behaviour
-vim.opt.autochdir = false                                                                                                                                            -- do not autochange directories
-vim.opt.iskeyword:append("-")                                                                                                                                        -- include - in words
-vim.opt.path:append("**")                                                                                                                                            -- include subdirs in search
-vim.opt.selection = "inclusive"                                                                                                                                      -- include last char in selection
-vim.opt.mouse = "a"                                                                                                                                                  -- enable mouse support
-vim.opt.modifiable = true                                                                                                                                            -- allow buffer modifications
-vim.opt.encoding = "utf-8"                                                                                                                                           -- set encoding
+vim.opt.hidden = true                  -- allow hidden buffers
+vim.opt.errorbells = false             -- no error sounds
+vim.opt.backspace =
+"indent,eol,start"                     -- better backspace behaviour
+vim.opt.autochdir = false              -- do not autochange directories
+vim.opt.iskeyword:append("-")          -- include - in words
+vim.opt.path:append("**")              -- include subdirs in search
+vim.opt.selection =
+"inclusive"                            -- include last char in selection
+vim.opt.mouse =
+"a"                                    -- enable mouse support
+vim.opt.modifiable = true              -- allow buffer modifications
+vim.opt.encoding =
+"utf-8"                                -- set encoding
 
 vim.opt.guicursor =
-"n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175"                     -- cursor blinking and settings
+"n-v-c:block,i-ci-ve:block,r-cr:hor20,o:hor50,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor,sm:block-blinkwait175-blinkoff150-blinkon175" -- cursor blinking and settings
 
 -- Folding: requires treesitter available at runtime; safe fallback if not
 vim.opt.foldmethod = "expr"                          -- use expression for folding
@@ -114,23 +119,34 @@ elseif is_linux then
   }
 end
 
--- KeyMaps
+-- ================================================================================================
+-- KEYMAPS
+-- ================================================================================================
+
+-- Page Navigation
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result (centered)" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result (centered)" })
 vim.keymap.set("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 vim.keymap.set("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
-
-vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
-vim.keymap.set({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
-
 vim.keymap.set("n", "<leader>bn", ":bnext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" })
 
+-- Quality of Life
+vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
+vim.keymap.set({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
+vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
+vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+
+-- Window Navigation
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Move to bottom window" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Move to top window" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
-
 vim.keymap.set("n", "<leader>sv", ":vsplit<CR>", { desc = "Split window vertically" })
 vim.keymap.set("n", "<leader>sh", ":split<CR>", { desc = "Split window horizontally" })
 vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height" })
@@ -138,109 +154,8 @@ vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease window heig
 vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
 
-vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { desc = "Move line down" })
-vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { desc = "Move line up" })
-vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
-vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
+require('config.lazy')
 
-vim.keymap.set("v", "<", "<gv", { desc = "Indent left and reselect" })
-vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
-
-vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
--- =====================================================================
--- 3. Plugin Manager (Lazy.nvim)
--- =====================================================================
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable",
-    lazypath })
-end
-vim.opt.rtp:prepend(lazypath)
-
-require("lazy").setup({
-  -- UI & Theme
-  { "ellisonleao/gruvbox.nvim", priority = 1000, config = true },
-
-  -- Status Line
-  {
-    'nvim-lualine/lualine.nvim',
-    dependencies = { 'nvim-tree/nvim-web-devicons' } -- Optional: requires Nerd Font
-  },
-
-  -- Fuzzy Finder
-  {
-    'nvim-telescope/telescope.nvim',
-    branch = 'master',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      require('telescope').setup({
-        defaults = {
-          vimgrep_arguments = {
-            'rg', '--color=never', '--no-heading', '--with-filename',
-            '--line-number', '--column', '--smart-case'
-          },
-        }
-      })
-    end
-  },
-
-  -- Syntax Highlighting
-  {
-    "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
-    main = "nvim-treesitter.configs",
-    opts = {
-      ensure_installed = {
-        "javascript", "typescript", "html", "css", "scss", "python", "sql", "lua", "vim", "vimdoc"
-      },
-      highlight = {
-        enabled = true,
-        additional_vim_regex_highlighting = false,
-      },
-      indent = { enable = true },
-    },
-    config = function(_, opts) -- This safely handles the setup call if the module exists
-      local status, configs = pcall(require, "nvim-treesitter.configs")
-      if status then
-        configs.setup(opts)
-      else
-        -- If the module is totally gone (future 1.0.0),
-        -- NeoVim 0.11 handles highlighters automatically
-        vim.notify("Treesitter legacy config module not found; using native highlights", vim.log.levels.INFO)
-      end
-    end
-  },
-  -- LSP support
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = { "williamboman/mason.nvim", "williamboman/mason-lspconfig.nvim" },
-    config = function()
-      require("mason").setup()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "ts_ls", "angularls", "html", "cssls", "pyright", "sqlls", "lua_ls" }
-      })
-      vim.lsp.config("lua_ls", {
-        settings = {
-          Lua = {
-            diagnostics = { globals = { "vim" } },
-            telemetry = { enable = false },
-          },
-        },
-      })
-      local servers = {
-        "ts_ls", "angularls",
-        "html", "cssls",
-        "pyright", "sqlls", "lua_ls"
-      }
-      for _, server in ipairs(servers) do
-        vim.lsp.enable(server)
-      end
-    end
-  },
-
-  -- Formatter
-  { "stevearc/conform.nvim" },
-})
 
 -- =====================================================================
 -- 4. Formatting Logic (conform.nvim)
