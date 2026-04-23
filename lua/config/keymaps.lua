@@ -14,6 +14,16 @@ vim.keymap.set("n", "<leader>bp", ":bprevious<CR>", { desc = "Previous buffer" }
 
 -- TODO: Add keymaps for Telescope, LSPs, and gitsigns
 
+-- gitsigns
+-- key map for hp to preview hunk
+-- key map for hd to view div
+
+-- whichkey
+-- keymap for telescope combined with git
+-- keymap for telescope and LSP
+-- keymap for grepping files
+-- keymap for color picker
+
 -- Quality of Life
 vim.keymap.set("x", "<leader>p", '"_dP', { desc = "Paste without yanking" })
 vim.keymap.set({ "n", "v" }, "<leader>x", '"_d', { desc = "Delete without yanking" })
@@ -36,3 +46,59 @@ vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase window height
 vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease window height" })
 vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease window width" })
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase window width" })
+
+local builtin = require('telescope.builtin')
+vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+
+-- 1. Search only in Angular/TS/HTML/SCSS files
+vim.keymap.set('n', '<leader>fw', function()
+  builtin.find_files({
+    prompt_title = "Web Stack Search",
+    search_dirs = { "src" },
+    find_command = { "fd", "--type", "f", "-e", "ts", "-e", "html", "-e", "scss", "-e", "js" }
+  })
+end, { desc = "Search Web Files" })
+
+-- 2. Search only in Python files
+vim.keymap.set('n', '<leader>fp', function()
+  builtin.find_files({
+    prompt_title = "Python Search",
+    find_command = { "fd", "--type", "f", "-e", "py" }
+  })
+end, { desc = "Search Python Files" })
+
+-- 3. Live Grep restricted to a specific file type (e.g., only search code inside TS files)
+vim.keymap.set('n', '<leader>ft', function()
+  builtin.live_grep({
+    type_filter = "typescript",
+    prompt_title = "Grep TypeScript Only"
+  })
+end, { desc = "Grep in TS files" })
+
+-- Quick jump to your NeoVim config
+vim.keymap.set('n', '<leader>fc', function()
+  builtin.find_files({
+    cwd = vim.fn.stdpath("config"),
+    prompt_title = "NeoVim Config"
+  })
+end, { desc = "Edit NeoVim Config" })
+
+-- Search for TODO, FIXME, or HACK across the project
+vim.keymap.set('n', '<leader>ft', function()
+  builtin.live_grep({
+    prompt_title = "Project TODOs",
+    default_text = "TODO:|FIXME:|HACK:",
+    -- This tells ripgrep to treat the search as a Regular Expression
+    vimgrep_arguments = {
+      'rg', '--color=never', '--no-heading', '--with-filename',
+      '--line-number', '--column', '--smart-case', '--pcre2'
+    },
+  })
+end, { desc = "Find TODOs" })
+
+-- Browse and live-preview colorschemes
+vim.keymap.set('n', '<leader>th', function()
+  builtin.colorscheme({ enable_preview = true })
+end, { desc = "Switch Theme" })

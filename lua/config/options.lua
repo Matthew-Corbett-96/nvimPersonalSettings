@@ -2,6 +2,38 @@
 -- OPTIONS
 -- ============================================================================
 
+-- =====================================================================
+--  Cross-Platform Clipboard & Shell
+-- =====================================================================
+local is_windows = vim.fn.has('win32') == 1
+local is_linux = vim.fn.has('unix') == 1
+if is_windows then
+  vim.opt.clipboard = 'unnamedplus'
+elseif is_linux then
+  vim.opt.clipboard = 'unnamedplus'
+  -- Wayland support (requires wl-clipboard package on Arch)
+  vim.g.clipboard = {
+    name = 'wl-clipboard',
+    copy = { ['+'] = 'wl-copy', ['*'] = 'wl-copy' },
+    paste = { ['+'] = 'wl-paste', ['*'] = 'wl-paste' },
+  }
+end
+
+-- Folding: requires treesitter available at runtime; safe fallback if not
+vim.opt.foldmethod = "expr"                          -- use expression for folding
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()" -- use treesitter for folding
+-- Prefer LSP folding if client supports it
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    local client = vim.lsp.get_client_by_id(ev.data.client_id)
+    if client:supports_method('textDocument/foldingRange') then
+      local win = vim.api.nvim_get_current_win()
+      vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+    end
+  end,
+})
+vim.opt.foldlevel = 99 -- start with all folds open
+
 -- Undo Tree
 local undodir = vim.fn.expand("~/.vim/undodir")
 if vim.fn.isdirectory(undodir) == 0 then

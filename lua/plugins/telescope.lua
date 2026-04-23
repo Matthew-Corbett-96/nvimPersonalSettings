@@ -1,4 +1,4 @@
-return {
+return { -- NOTE: you will need CMAKE as a dependancy
   'nvim-telescope/telescope.nvim',
   version = '*',
   dependencies = {
